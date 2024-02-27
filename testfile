@@ -1,0 +1,71 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { CreateNachoDto } from './dto/create-nacho.dto';
+import { UpdateNachoDto } from './dto/update-nacho.dto';
+import { NachosService } from './nachos.service';
+//decorator
+@Controller('nachos')
+//controller has prefix of 'nachos'
+export class NachosController {
+  constructor(private readonly nachosService: NachosService) { }
+  // GET /nachos --> []
+
+  @Get() // inform nest that this is a get method
+  //define a method like
+  getNachosAll(
+    @Query('flavor') flavor: 'sour cream' | 'cheez') {
+    //   const service = new NachosService();
+
+
+    return this.nachosService.getNachos(flavor); //return array
+  }
+
+  // query to filter according to type or any sort
+  // GET /ninjas?type=fast --> []
+  @Get('search')
+  getNachosQuery(
+
+    @Query('flavor') flavor: string) {
+
+    return this.nachosService.getNachos(flavor);
+}
+  //   @Query('flavor') flavor: string) {
+//     this.nachosService.getNacho
+//   // return [{ flavor }]; //return array
+// }
+  // GET /nachos/:id --> {...}
+  @Get(':id')
+  //parse out id with Param decorator which can have a string expected passed ; parse id so place id in param from the url
+
+  //nest parses the url and auto injects it in the method
+  getOneNacho(@Param('id') id: string) {
+    return this.nachosService.getNacho(+id);
+  }; //return object
+
+
+
+  // POST /nachos
+  @Post()
+  createNacho(@Body() createNachoDto: CreateNachoDto) {
+    return this.nachosService.createNacho(createNachoDto);
+
+  }
+  // PUT /nachos/:id --> {...}
+  @Put(':id')
+  updateNacho(@Param('id') id: string, @Body() updateNachoDto: UpdateNachoDto) {
+    return this.nachosService.updateNacho(+id, updateNachoDto);
+  }
+  // DELETE /nachos/:id
+  @Delete(':id')
+  removeNacho(@Param('id') id: string) {
+    return this.nachosService.removeNacho(+id);
+  }
+}
